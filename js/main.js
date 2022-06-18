@@ -13,3 +13,6 @@ function getRandomInteger(minimalValue, maximalValue) {
 function checkStringFits(examinedString, maximalLength){
   return examinedString.length <= maximalLength;
 }
+
+getRandomInteger(-1,5);
+checkStringFits('Some string',8);
