@@ -10,7 +10,28 @@ const getRandomInteger = (minimalValue, maximalValue) => {
   return Math.floor(Math.random() * (maximalValue - minimalValue) + minimalValue);
 };
 
-const checkStringFits = (examinedString, maximalLength) => (examinedString.length <= maximalLength);
+const isStringFits = (examinedString, maximalLength) => (examinedString.length <= maximalLength);
 
-export {getRandomInteger};
-export {checkStringFits};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+const isStringInArray = (testString, stringArray) =>{
+  for (let i=0; i<stringArray.length; i++) {
+    if (testString.toLowerCase === stringArray[i].toLowerCase) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const isEqualStringsInArray = (stringsArray) =>{
+  for (let i=0; i<stringsArray.length-1; i++) {
+    for (let j=i+1; j<stringsArray.length; j++) {
+      if (stringsArray[i].toLowerCase() === stringsArray[j].toLowerCase()) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+export {getRandomInteger, isStringFits, isEscapeKey, isStringInArray,isEqualStringsInArray};
