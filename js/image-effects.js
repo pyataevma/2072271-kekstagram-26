@@ -13,7 +13,7 @@ const effectLevelSlider = effectLevelField.querySelector('.effect-level__slider'
 const SCALE_PERCENT_STEP = 25;
 const MAX_SCALE_PERCENT = 100;
 const MIN_SCALE_PERCENT = 25;
-let scalePercent = parseFloat(scaleControlValue.value);
+let scalePercent = MAX_SCALE_PERCENT;
 
 const effectProperties = [
   {class: 'effects__preview--none', filter: 'none', isSliderHidden: true, min: 0, max: 1, step: 0.1, unit: '' },
@@ -107,4 +107,5 @@ effectsList.addEventListener('change', () => {
   setEffect();
 });
 
+changeScale(0); // set default scale
 replaceEffect(currentEffect); // set default effect
