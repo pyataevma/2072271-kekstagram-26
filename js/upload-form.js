@@ -1,44 +1,68 @@
 import {isEscapeKey, isStringFits, isEqualStringsInArray} from './util.js';
-const body=document.querySelector('body');
-const imageUploadForm=document.querySelector('.img-upload__form');
-const uploadFile=imageUploadForm.querySelector('#upload-file');
-const imageUploadOverlay=imageUploadForm.querySelector('.img-upload__overlay');
-const imageUploadCancel=imageUploadOverlay.querySelector('.img-upload__cancel');
-const hashtagInput=imageUploadForm.querySelector('.text__hashtags');
-const commentInput=imageUploadForm.querySelector('.text__description');
-const hashtagMask=/^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+import {sendData} from './server-interactions.js';
+import {setDefaultEffect} from './image-effects.js';
+const body = document.querySelector('body');
+const imageUploadForm = document.querySelector('.img-upload__form');
+const uploadFile = imageUploadForm.querySelector('#upload-file');
+const imageUploadOverlay = imageUploadForm.querySelector('.img-upload__overlay');
+const imageUploadCancel = imageUploadOverlay.querySelector('.img-upload__cancel');
+const hashtagInput = imageUploadForm.querySelector('.text__hashtags');
+const commentInput = imageUploadForm.querySelector('.text__description');
+const submitButton = imageUploadForm.querySelector('.img-upload__submit');
+const errorMessageTemplate = document.querySelector('#error').content;
+const successMessageTemplate = document.querySelector('#success').content;
+const hashtagMask = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+
+const setDefaultFields = () => {
+  uploadFile.value='';
+  hashtagInput.value='';
+  commentInput.value='';
+};
+
+const setFormDefaultValues = () => {
+  setDefaultFields();
+  setDefaultEffect();
+};
 
 const onUploadOverlayEscKeydown = (evt) => {
   if (isEscapeKey(evt) && document.activeElement!==hashtagInput && document.activeElement!==commentInput) {
     evt.preventDefault();
-    closeUploadOverlay(evt);
+    setFormDefaultValues();
+    closeUploadOverlay();
   }
 };
 
-function openUploadOverlay(evt) {
+const onUploadOverlayCancelClick = (evt) => {
   evt.preventDefault();
+  setFormDefaultValues();
+  closeUploadOverlay();
+};
+
+function openUploadOverlay() {
   body.classList.add('modal-open');
   imageUploadOverlay.classList.remove('hidden');
-  imageUploadCancel.addEventListener('click', closeUploadOverlay);
+  imageUploadCancel.addEventListener('click', onUploadOverlayCancelClick);
   document.addEventListener('keydown', onUploadOverlayEscKeydown);
 }
 
-function closeUploadOverlay (evt) {
-  evt.preventDefault();
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+function closeUploadOverlay () {
+  unblockSubmitButton();
   imageUploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   uploadFile.value='';
   document.removeEventListener('keydown', onUploadOverlayEscKeydown);
-  imageUploadCancel.removeEventListener('click', closeUploadOverlay);
+  imageUploadCancel.removeEventListener('click', onUploadOverlayCancelClick);
 }
-// При определении этой функции как стрелочной линтер ругается на то,
-// что ее вызов происходит до объявления.
-// const closeUploadOverlay = (evt) => {
-//   evt.preventDefault();
-//   imageUploadOverlay.classList.add('hidden');
-//   body.classList.remove('modal-open');
-//   document.removeEventListener('keydown', onUploadOverlayEscKeydown);
-// };
 
 const pristine = new Pristine(imageUploadForm);
 
@@ -46,8 +70,6 @@ const validateComment = (value) => isStringFits(value,140);
 
 const validateHashtag = (value) => {
   const testValue=value.trim();
-  // сервер принимает строку с пробелами в начале иил в конце,
-  // а для пользователю лучше, чтобы ошибки возникали реже.
   if (testValue.length === 0) {
     //console.log('хештегов нет');
     return true;
@@ -70,16 +92,55 @@ const validateHashtag = (value) => {
   return true;
 };
 
-pristine.addValidator(imageUploadForm.querySelector('.text__description'), validateComment,'Comment');
 
-pristine.addValidator(imageUploadForm.querySelector('.text__hashtags'), validateHashtag,'Hashtag');
+pristine.addValidator(commentInput, validateComment,'Comment');
 
-uploadFile.addEventListener('change', openUploadOverlay);
+pristine.addValidator(hashtagInput, validateHashtag,'Hashtag');
+
+const displayErrorMessage = (message, buttonTitle)=>{
+  const newErrorMessage = errorMessageTemplate.cloneNode(true);
+  const errorMessageButton = newErrorMessage.querySelector('.error__button');
+  newErrorMessage.querySelector('.error__title').textContent = message;
+  errorMessageButton.textContent=buttonTitle;
+  errorMessageButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    const currentMessage = document.querySelector('body > .error');
+    body.removeChild(currentMessage);
+  });
+  body.appendChild(newErrorMessage);
+};
+
+const displaySuccessMessage = () => {
+  const newSuccessMessage = successMessageTemplate.cloneNode(true);
+  const successMessageButton = newSuccessMessage.querySelector('.success__button');
+  successMessageButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    const currentMessage = document.querySelector('body > .success');
+    body.removeChild(currentMessage);
+  });
+  body.appendChild(newSuccessMessage);
+};
+
+const onSuccessUpload = () => {
+  displaySuccessMessage();
+  closeUploadOverlay();
+  setFormDefaultValues();
+};
+
+const onUploadError = (message, buttonTitle) => {
+  displayErrorMessage(message, buttonTitle);
+  closeUploadOverlay();
+};
+
+uploadFile.addEventListener('change', (evt) => {
+  evt.preventDefault(evt);
+  openUploadOverlay();
+});
 
 imageUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   if (pristine.validate()){
-    imageUploadForm.submit();
+    sendData(blockSubmitButton, imageUploadForm, onSuccessUpload, onUploadError);
   }
   else{
     //console.log('Проверка не прошла');
