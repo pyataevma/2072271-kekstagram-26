@@ -1,4 +1,4 @@
-import {getRandomInteger} from './util.js';
+import {getRandomInteger,getShuffledIndeces} from './util.js';
 
 const MAX_NUMBER_OF_COMMENTS=10;
 const MAX_AVATARS_NUMBER=6;
@@ -53,19 +53,6 @@ const photoDescriptions = [
   'Джип'
 ];
 
-const getShufledIndeces = (arraySize) => {
-  const shufledIndeces=[];
-  for (let i=0; i<arraySize; i++) {
-    shufledIndeces[i]=i;
-  }
-  for (let i=0; i<arraySize; i++){
-    const randomIndex=getRandomInteger(0,arraySize-1);
-    const swap=shufledIndeces[i];
-    shufledIndeces[i]=shufledIndeces[randomIndex];
-    shufledIndeces[randomIndex]=swap;
-  }
-  return shufledIndeces;
-};
 
 const createComment = (givenId) => (
   {
@@ -79,9 +66,9 @@ const createComment = (givenId) => (
 const createAllComments = () => {
   const numberOfComments=getRandomInteger(0,MAX_NUMBER_OF_COMMENTS);
   const allComments=[];
-  const shufledIndeces=getShufledIndeces(numberOfComments);
+  const shuffledIndeces=getShuffledIndeces(numberOfComments);
   for (let i=0; i<numberOfComments; i++) {
-    allComments[i]=createComment(shufledIndeces[i]);
+    allComments[i]=createComment(shuffledIndeces[i]);
   }
   return allComments;
 };
@@ -98,8 +85,8 @@ const createPhoto = (givenId, imageIndex) => (
 
 const createAllPhotos = () => {
   const allPhotos=[];
-  const photoIdentificators=getShufledIndeces(NUMBER_OF_PHOTOS);
-  const imageIndeces=getShufledIndeces(NUMBER_OF_PHOTOS);
+  const photoIdentificators=getShuffledIndeces(NUMBER_OF_PHOTOS);
+  const imageIndeces=getShuffledIndeces(NUMBER_OF_PHOTOS);
   for (let i=0; i<NUMBER_OF_PHOTOS; i++) {
     allPhotos[i]=createPhoto(photoIdentificators[i],imageIndeces[i]);
   }
