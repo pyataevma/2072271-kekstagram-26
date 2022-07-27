@@ -11,7 +11,9 @@ const commentInput = imageUploadForm.querySelector('.text__description');
 const submitButton = imageUploadForm.querySelector('.img-upload__submit');
 const errorMessageTemplate = document.querySelector('#error').content;
 const successMessageTemplate = document.querySelector('#success').content;
+const previewImage = document.querySelector('.img-upload__preview img');
 const hashtagMask = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const setDefaultFields = () => {
   uploadFile.value='';
@@ -25,7 +27,7 @@ const setFormDefaultValues = () => {
 };
 
 const onUploadOverlayEscKeydown = (evt) => {
-  if (isEscapeKey(evt) && document.activeElement!==hashtagInput && document.activeElement!==commentInput) {
+  if (isEscapeKey(evt) && document.activeElement !== hashtagInput && document.activeElement !== commentInput) {
     evt.preventDefault();
     setFormDefaultValues();
     closeUploadOverlay();
@@ -134,7 +136,16 @@ const onUploadError = (message, buttonTitle) => {
 
 uploadFile.addEventListener('change', (evt) => {
   evt.preventDefault(evt);
-  openUploadOverlay();
+  const file = uploadFile.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    previewImage.src = URL.createObjectURL(file);
+    openUploadOverlay();
+  }
+  else {
+    onUploadError('Выбранный файл не является изображением', 'Попробовать еще раз');
+  }
 });
 
 imageUploadForm.addEventListener('submit', (evt) => {
