@@ -107,5 +107,12 @@ effectsList.addEventListener('change', () => {
   setEffect();
 });
 
-changeScale(0); // set default scale
-replaceEffect(currentEffect); // set default effect
+const setDefaultEffect = () => {
+  scalePercent = MAX_SCALE_PERCENT; // set default scale
+  changeScale(0);
+  effectRadioItems[0].checked=true;
+  setEffect();
+};
+
+setDefaultEffect();
+export {setDefaultEffect};
