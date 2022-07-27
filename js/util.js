@@ -1,4 +1,4 @@
-const ALERT_SHOW_TIME=3000;
+const ALERT_SHOW_TIME=5000;
 
 const getRandomInteger = (minimalValue, maximalValue) => {
   if (minimalValue < 0) {
@@ -10,6 +10,29 @@ const getRandomInteger = (minimalValue, maximalValue) => {
     // то функция возвращает округленное вниз минимальное значение или ноль.
   }
   return Math.floor(Math.random() * (maximalValue - minimalValue) + minimalValue);
+};
+
+const getShuffledIndeces = (arraySize) => {
+  const shufledIndeces=[];
+  for (let i=0; i<arraySize; i++) {
+    shufledIndeces[i]=i;
+  }
+  for (let i=0; i<arraySize; i++){
+    const randomIndex=getRandomInteger(0,arraySize-1);
+    const swap=shufledIndeces[i];
+    shufledIndeces[i]=shufledIndeces[randomIndex];
+    shufledIndeces[randomIndex]=swap;
+  }
+  return shufledIndeces;
+};
+
+const getShuffledArray = (array) => {
+  const newArray=[];
+  const shuffledIndeces=getShuffledIndeces(array.length);
+  for (let i=0; i<array.length; i++) {
+    newArray[i]=array[shuffledIndeces[i]];
+  }
+  return newArray;
 };
 
 const isStringFits = (examinedString, maximalLength) => (examinedString.length <= maximalLength);
@@ -56,4 +79,14 @@ const showAlert = (message) => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
 };
-export {getRandomInteger, isStringFits, isEscapeKey, isStringInArray,isEqualStringsInArray,showAlert};
+
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {getRandomInteger, isStringFits, isEscapeKey, isStringInArray,
+  isEqualStringsInArray, showAlert, getShuffledIndeces, getShuffledArray, debounce};
