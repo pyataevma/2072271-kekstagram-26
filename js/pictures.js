@@ -1,4 +1,5 @@
 import {getShuffledArray} from './util.js';
+import {displayBigPicture} from './big-picture.js';
 const pictureContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content;
 const userPicturesFragment = document.createDocumentFragment();
@@ -51,9 +52,13 @@ const removePhotos = ()=>{
 
 const addPhoto = (photo) => {
   const newPicture = pictureTemplate.cloneNode(true);
-  newPicture.querySelector('.picture__img').src=photo.url;
+  const newPictureImage = newPicture.querySelector('.picture__img');
+  newPictureImage.src=photo.url;
   newPicture.querySelector('.picture__likes').textContent=photo.likes;
   newPicture.querySelector('.picture__comments').textContent=photo.comments.length;
+  newPictureImage.addEventListener('click', () => {
+    displayBigPicture(photo);
+  });
   userPicturesFragment.appendChild(newPicture);
 };
 
