@@ -10,8 +10,8 @@ const bigPictureCancelButton = bigPictureSection.querySelector('button.big-pictu
 const bigPictureCommentsLoader = bigPictureSection.querySelector('button.comments-loader');
 const bigPictureCommentsList = bigPictureSection.querySelector('ul.social__comments');
 const bigPictureComment = bigPictureSection.querySelector('li.social__comment');
-const COMMENT_BUNCH_SIZE=5;
-let commentCounter=0;
+const COMMENT_BUNCH_SIZE = 5;
+let commentCounter = 0;
 let currentComments;
 
 const onBigPictureEscKeydown = (evt) => {
@@ -29,7 +29,7 @@ const clearComments = () => {
   commentCounter=0;
 };
 
-const addComment = (comment) =>{
+const addComment = (comment) => {
   const newComment = bigPictureComment.cloneNode(true);
   newComment.querySelector('p.social__text').textContent = comment.message;
   newComment.querySelector('img.social__picture').src = comment.avatar;
@@ -37,7 +37,7 @@ const addComment = (comment) =>{
   bigPictureCommentsList.appendChild(newComment);
 };
 
-const addCommentBunch = () =>{
+const addCommentBunch = () => {
   if (commentCounter < currentComments.length){
     const firstComment = commentCounter;
     commentCounter+=COMMENT_BUNCH_SIZE;
@@ -58,12 +58,12 @@ const onCommentsLoaderClick = () => {
   addCommentBunch();
 };
 
-const onCancelButtonClick = (evt)=>{
+const onCancelButtonClick = (evt) => {
   evt.preventDefault();
   closeBigPicture();
 };
 
-function closeBigPicture () {
+function closeBigPicture() {
   body.classList.remove('modal-open');
   bigPictureSection.classList.add('hidden');
   document.removeEventListener('keydown', onBigPictureEscKeydown);

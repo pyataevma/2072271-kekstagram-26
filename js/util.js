@@ -58,7 +58,7 @@ const showAlert = (message) => {
   alertContainer.style.padding = '10px 3px';
   alertContainer.style.fontSize = '30px';
   alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'grey';
+  alertContainer.style.backgroundColor = 'red';
   alertContainer.textContent = message;
   document.body.append(alertContainer);
   setTimeout(() => {

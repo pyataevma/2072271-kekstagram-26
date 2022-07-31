@@ -120,7 +120,7 @@ const removeEffectsEventListeners = () => {
 };
 
 const setDefaultEffect = () => {
-  scalePercent = MAX_SCALE_PERCENT; // set default scale
+  scalePercent = MAX_SCALE_PERCENT;
   changeScale(0);
   effectRadioItems[0].checked=true;
   setEffect();

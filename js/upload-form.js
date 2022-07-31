@@ -18,6 +18,7 @@ const submitButton = imageUploadForm.querySelector('.img-upload__submit');
 const errorMessageTemplate = document.querySelector('#error').content;
 const successMessageTemplate = document.querySelector('#success').content;
 const previewImage = document.querySelector('.img-upload__preview img');
+let isFormActive=false;
 
 const uploadFormValidator = new Pristine(imageUploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -104,7 +105,9 @@ function closeErrrorMessage () {
   body.removeChild(currentMessage);
   document.removeEventListener('click', onOutsideErrorMessageClick);
   document.removeEventListener('keydown', onErorrMessageEscKeydown);
-  showUploadOverlay();
+  if (isFormActive) {
+    showUploadOverlay();
+  }
 }
 
 const displayErrorMessage = (message, buttonTitle)=>{
@@ -119,8 +122,8 @@ const displayErrorMessage = (message, buttonTitle)=>{
 };
 
 const handleUploadError = (message, buttonTitle) => {
-  hideUploadOverlay();
   displayErrorMessage(message, buttonTitle);
+  hideUploadOverlay();
 };
 
 const onSuccessMessageEscKeydown = (evt) => {
@@ -160,17 +163,15 @@ const handleSuccessUpload = () => {
 
 const onUploadFormSubmit = (evt) => {
   evt.preventDefault();
-
   const isValid = uploadFormValidator.validate();
-
   if (!isValid) {
     return;
   }
-
+  isFormActive=true;
   sendData(blockSubmitButton, imageUploadForm, handleSuccessUpload, handleUploadError);
 };
 
-function showUploadOverlay () {
+function showUploadOverlay() {
   body.classList.add('modal-open');
   imageUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onUploadOverlayEscKeydown);
@@ -179,7 +180,7 @@ function showUploadOverlay () {
   addEffectsEventListeners();
 }
 
-function hideUploadOverlay () {
+function hideUploadOverlay() {
   unblockSubmitButton();
   imageUploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
@@ -189,7 +190,7 @@ function hideUploadOverlay () {
   imageUploadForm.removeEventListener('submit', onUploadFormSubmit);
 }
 
-function closeUploadOverlay () {
+function closeUploadOverlay() {
   setFormDefaultValues();
   hideUploadOverlay();
 }
@@ -205,6 +206,8 @@ const onFileInputChange = (evt) => {
     showUploadOverlay();
   }
   else {
+    isFormActive=false;
+    setFormDefaultValues();
     handleUploadError('Выбранный файл не является изображением', 'Загрузить другой файл');
   }
 };
