@@ -29,7 +29,7 @@ const replaceActiveFilter = (button) => {
   }
 };
 
-const setFilterClick = (cb) => {
+const prepareFilterButtons = (cb) => {
   filterButtons.forEach((button) => {
     button.addEventListener('click', (evt)=>{
       evt.preventDefault();
@@ -43,7 +43,7 @@ const displayImageFilter = () => {
   imageFiltersContainer.classList.remove('img-filters--inactive');
 };
 
-const removePhotos = ()=>{
+const removePhotos = () => {
   const presentPhotos = pictureContainer.querySelectorAll('.picture');
   presentPhotos.forEach((photo) => {
     pictureContainer.removeChild(photo);
@@ -64,7 +64,7 @@ const addPhoto = (photo) => {
 
 const comparePhotos = (firstPhoto,secondPhoto) => secondPhoto.comments.length - firstPhoto.comments.length;
 
-const displayPhotos = (photos)=>{
+const displayPhotos = (photos) => {
   const currentFilterId=findActiveFilter().id;
   let selectedPhotos;
   switch(currentFilterId) {
@@ -84,4 +84,4 @@ const displayPhotos = (photos)=>{
   pictureContainer.appendChild(userPicturesFragment);
 };
 
-export{displayPhotos,displayImageFilter,setFilterClick};
+export{displayPhotos, displayImageFilter, prepareFilterButtons};
