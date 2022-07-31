@@ -1408,3 +1408,8 @@ main {
 .hidden {
   display: none;
 }
+
+.img-upload__error {
+  margin: 20px;
+  color: #fd2424;
+}

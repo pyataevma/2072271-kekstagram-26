@@ -1,3 +1,6 @@
+const SCALE_PERCENT_STEP = 25;
+const MAX_SCALE_PERCENT = 100;
+const MIN_SCALE_PERCENT = 25;
 const previewImage = document.querySelector('.img-upload__preview img');
 const imageScaleControl = document.querySelector('.img-upload__scale');
 const scaleSmallerButton = imageScaleControl.querySelector('.scale__control--smaller');
@@ -9,12 +12,6 @@ const effectKinds = effectsList.querySelectorAll('.effects__preview');
 const effectLevelField = document.querySelector('.img-upload__effect-level');
 const effectLevelValue = effectLevelField.querySelector('.effect-level__value');
 const effectLevelSlider = effectLevelField.querySelector('.effect-level__slider');
-
-const SCALE_PERCENT_STEP = 25;
-const MAX_SCALE_PERCENT = 100;
-const MIN_SCALE_PERCENT = 25;
-let scalePercent = MAX_SCALE_PERCENT;
-
 const effectProperties = [
   {class: 'effects__preview--none', filter: 'none', isSliderHidden: true, min: 0, max: 1, step: 0.1, unit: '' },
   {class: 'effects__preview--chrome', filter: 'grayscale', isSliderHidden: false, min: 0, max: 1, step: 0.1, unit: '' },
@@ -23,6 +20,8 @@ const effectProperties = [
   {class: 'effects__preview--phobos', filter: 'blur', isSliderHidden: false, min: 0, max: 3, step: 0.1, unit: 'px' },
   {class: 'effects__preview--heat', filter: 'brightness', isSliderHidden: false, min: 0, max: 3, step: 0.1, unit: '' },
 ];
+
+let scalePercent = MAX_SCALE_PERCENT;
 let currentEffect = effectProperties[0];
 
 const changeScale = (percentShift) => {
@@ -36,14 +35,6 @@ const changeScale = (percentShift) => {
   scaleControlValue.value = `${scalePercent}%`;
   previewImage.style.transform = `scale(${scalePercent / 100})`;
 };
-
-scaleBiggerButton.addEventListener('click', () => {
-  changeScale(SCALE_PERCENT_STEP);
-});
-
-scaleSmallerButton.addEventListener('click', () => {
-  changeScale(-SCALE_PERCENT_STEP);
-});
 
 noUiSlider.create(effectLevelSlider, {
   range: {
@@ -103,9 +94,30 @@ const setEffect = () => {
   }
 };
 
-effectsList.addEventListener('change', () => {
+
+const onEffectsChange = () => {
   setEffect();
-});
+};
+
+const onBiggerButtonClick = () => {
+  changeScale(SCALE_PERCENT_STEP);
+};
+
+const onSmallerButtonClick = () => {
+  changeScale(-SCALE_PERCENT_STEP);
+};
+
+const addEffectsEventListeners = () => {
+  effectsList.addEventListener('change', onEffectsChange);
+  scaleBiggerButton.addEventListener('click', onBiggerButtonClick);
+  scaleSmallerButton.addEventListener('click', onSmallerButtonClick);
+};
+
+const removeEffectsEventListeners = () => {
+  effectsList.removeEventListener('change', onEffectsChange);
+  scaleBiggerButton.removeEventListener('click', onBiggerButtonClick);
+  scaleSmallerButton.removeEventListener('click', onSmallerButtonClick);
+};
 
 const setDefaultEffect = () => {
   scalePercent = MAX_SCALE_PERCENT; // set default scale
@@ -114,5 +126,4 @@ const setDefaultEffect = () => {
   setEffect();
 };
 
-setDefaultEffect();
-export {setDefaultEffect};
+export {setDefaultEffect, addEffectsEventListeners, removeEffectsEventListeners};

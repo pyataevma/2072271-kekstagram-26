@@ -6,52 +6,41 @@ const getRandomInteger = (minimalValue, maximalValue) => {
   }
   if (maximalValue <= minimalValue) {
     return Math.floor(minimalValue);
-    // Если максимальное значение <= минимального,
-    // то функция возвращает округленное вниз минимальное значение или ноль.
   }
   return Math.floor(Math.random() * (maximalValue - minimalValue) + minimalValue);
 };
 
-const getShuffledIndeces = (arraySize) => {
-  const shufledIndeces=[];
+const getShuffledIndices = (arraySize) => {
+  const shuffledIndices=[];
   for (let i=0; i<arraySize; i++) {
-    shufledIndeces[i]=i;
+    shuffledIndices[i]=i;
   }
   for (let i=0; i<arraySize; i++){
     const randomIndex=getRandomInteger(0,arraySize-1);
-    const swap=shufledIndeces[i];
-    shufledIndeces[i]=shufledIndeces[randomIndex];
-    shufledIndeces[randomIndex]=swap;
+    const swap=shuffledIndices[i];
+    shuffledIndices[i]=shuffledIndices[randomIndex];
+    shuffledIndices[randomIndex]=swap;
   }
-  return shufledIndeces;
+  return shuffledIndices;
 };
 
-const getShuffledArray = (array) => {
-  const newArray=[];
-  const shuffledIndeces=getShuffledIndeces(array.length);
-  for (let i=0; i<array.length; i++) {
-    newArray[i]=array[shuffledIndeces[i]];
+const getShuffledArray = (items) => {
+  const newItems=[];
+  const shuffledIndeces=getShuffledIndices(items.length);
+  for (let i=0; i<items.length; i++) {
+    newItems[i]=items[shuffledIndeces[i]];
   }
-  return newArray;
+  return newItems;
 };
 
 const isStringFits = (examinedString, maximalLength) => (examinedString.length <= maximalLength);
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const isStringInArray = (testString, stringArray) =>{
-  for (let i=0; i<stringArray.length; i++) {
-    if (testString.toLowerCase === stringArray[i].toLowerCase) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const isEqualStringsInArray = (stringsArray) =>{
-  for (let i=0; i<stringsArray.length-1; i++) {
-    for (let j=i+1; j<stringsArray.length; j++) {
-      if (stringsArray[i].toLowerCase() === stringsArray[j].toLowerCase()) {
+const isEqualStringsInArray = (strings) =>{
+  for (let i=0; i<strings.length-1; i++) {
+    for (let j=i+1; j<strings.length; j++) {
+      if (strings[i].toLowerCase() === strings[j].toLowerCase()) {
         return true;
       }
     }
@@ -70,17 +59,14 @@ const showAlert = (message) => {
   alertContainer.style.fontSize = '30px';
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'grey';
-
   alertContainer.textContent = message;
-
   document.body.append(alertContainer);
-
   setTimeout(() => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
 };
 
-const debounce = (callback, timeoutDelay) => {
+const preventBounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
@@ -88,5 +74,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export {getRandomInteger, isStringFits, isEscapeKey, isStringInArray,
-  isEqualStringsInArray, showAlert, getShuffledIndeces, getShuffledArray, debounce};
+export {isStringFits, isEscapeKey, isEqualStringsInArray, showAlert, getShuffledArray, preventBounce};

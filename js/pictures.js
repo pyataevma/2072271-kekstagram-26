@@ -29,7 +29,7 @@ const replaceActiveFilter = (button) => {
   }
 };
 
-const setFilterClick = (cb) => {
+const prepareFilterButtons = (cb) => {
   filterButtons.forEach((button) => {
     button.addEventListener('click', (evt)=>{
       evt.preventDefault();
@@ -84,4 +84,4 @@ const displayPhotos = (photos)=>{
   pictureContainer.appendChild(userPicturesFragment);
 };
 
-export{displayPhotos,displayImageFilter,setFilterClick};
+export{displayPhotos, displayImageFilter, prepareFilterButtons};
